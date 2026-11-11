@@ -15,11 +15,11 @@ lms/migrations/__init__.py                             0      0   100%
 lms/models.py                                         33      3    91%
 lms/paginators.py                                      5      0   100%
 lms/permissions.py                                    11      1    91%
-lms/serializers.py                                    26      5    81%
-lms/tests.py                                          68      0   100%
+lms/serializers.py                                    26      1    96%
+lms/tests.py                                         138      0   100%
 lms/urls.py                                            6      0   100%
-lms/validators.py                                      7      1    86%
-lms/views.py                                          63     14    78%
+lms/validators.py                                     15      3    80%
+lms/views.py                                          63      7    89%
 manage.py                                             11      2    82%
 users/__init__.py                                      0      0   100%
 users/admin.py                                        12      0   100%
@@ -34,4 +34,4 @@ users/tests.py                                        17      0   100%
 users/urls.py                                          3      0   100%
 users/views.py                                        36      2    94%
 ----------------------------------------------------------------------
-TOTAL                                                447     43    90%
+TOTAL                                                525     34    94%
