@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from .models import Course, Lesson, Subscription
@@ -27,9 +28,11 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = "__all__"
 
+    @extend_schema_field(serializers.IntegerField())
     def get_lessons_count(self, obj):
         return obj.lessons.count()
 
+    @extend_schema_field(serializers.BooleanField())
     def get_is_subscribed(self, obj):
         user = self.context.get("request").user
         if user.is_authenticated:

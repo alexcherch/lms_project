@@ -86,3 +86,23 @@ class Payment(models.Model):
     class Meta:
         verbose_name = "Платеж"
         verbose_name_plural = "Платежи"
+
+    stripe_product_id = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name="ID продукта в Stripe"
+    )
+
+    stripe_price_id = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name="ID цены в Stripe"
+    )
+
+    payment_link = models.URLField(
+        max_length=500, blank=True, null=True, verbose_name="Ссылка на оплату"
+    )
+
+    session_id = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name="ID сессии в Stripe"
+    )
+
+    status = models.CharField(
+        max_length=20, default="pending", verbose_name="Статус оплаты"
+    )
