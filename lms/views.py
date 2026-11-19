@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiResponse,
@@ -18,6 +21,7 @@ from .models import Course, Lesson, Subscription
 from .paginators import CustomPagination
 from .permissions import IsModer, IsOwner
 from .serializers import CourseSerializer, LessonSerializer
+from .tasks import send_course_update_email
 
 
 @extend_schema_view(
@@ -88,6 +92,10 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        send_course_update_email.delay(course.id)
 
     def get_queryset(self):
         user = self.request.user
@@ -175,6 +183,17 @@ class LessonRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         elif self.request.method == "DELETE":
             self.permission_classes = [IsAuthenticated, IsOwner]
         return [permission() for permission in self.permission_classes]
+
+    def perform_update(self, serializer):
+        lesson = serializer.save()
+        course = lesson.course
+        now = timezone.now()
+
+        # Уведомляем подписчиков, только если курс не обновлялся более 4 часов
+        if now - course.updated_at > timedelta(hours=4):
+            send_course_update_email.delay(course.id)
+
+        Course.objects.filter(pk=course.pk).update(updated_at=now)
 
 
 class SubscriptionAPIView(APIView):
